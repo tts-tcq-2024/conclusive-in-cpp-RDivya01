@@ -55,13 +55,31 @@ TEST(TypeWiseAlertTestSuite, DoesNotSendNormalTemperatureEmail) {
     EXPECT_EQ(output, "");
 }
 
-TEST(TypeWiseAlertTestSuite, CheckAndAlertToEmail) {
-    BatteryCharacter batteryChar = {HI_ACTIVE_COOLING, "BrandY"};
+// Test checkAndAlert function with TO_EMAIL
+TEST(TypeWiseAlertTestSuite, CheckAndAlertToEmailTooHigh) {
+    BatteryCharacter batteryChar = {MED_ACTIVE_COOLING, "BrandX"};
     testing::internal::CaptureStdout();
-    checkAndAlert(TO_EMAIL, batteryChar, 46);
+    checkAndAlert(TO_EMAIL, batteryChar, 41); // This should result in a TOO_HIGH email
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output, "To: a.b@c.com\nHi, the temperature is too high\n");
 }
+
+TEST(TypeWiseAlertTestSuite, CheckAndAlertToEmailTooLow) {
+    BatteryCharacter batteryChar = {MED_ACTIVE_COOLING, "BrandX"};
+    testing::internal::CaptureStdout();
+    checkAndAlert(TO_EMAIL, batteryChar, -1); // This should result in a TOO_LOW email
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "To: a.b@c.com\nHi, the temperature is too low\n");
+}
+
+TEST(TypeWiseAlertTestSuite, CheckAndAlertToEmailNormal) {
+    BatteryCharacter batteryChar = {MED_ACTIVE_COOLING, "BrandX"};
+    testing::internal::CaptureStdout();
+    checkAndAlert(TO_EMAIL, batteryChar, 30); // This should not produce any output
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, ""); // Ensure no output for NORMAL
+}
+
 
 // Test sendToController function
 TEST(TypeWiseAlertTestSuite, SendsToControllerNormal) {
