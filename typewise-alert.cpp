@@ -39,6 +39,8 @@ void checkAndAlert(
     sendToController(breachType);
   } else if (alertTarget == TO_EMAIL) {
     sendToEmail(breachType);
+  } else {
+    // for branch coverage
   }
 }
 
