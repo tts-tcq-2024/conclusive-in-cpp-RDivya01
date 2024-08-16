@@ -13,15 +13,14 @@ BreachType inferBreach(double value, double lowerLimit, double upperLimit) {
 
 void getCoolingLimits(CoolingType coolingType, int* lowerLimit, int* upperLimit) {
   *lowerLimit = 0;
-  
+
   if (coolingType == PASSIVE_COOLING) {
     *upperLimit = 35;
-  } else if (coolingType == HI_ACTIVE_COOLING) {
-    *upperLimit = 45;
-  } else if (coolingType == MED_ACTIVE_COOLING) {
-    *upperLimit = 40;
+  } else {
+    *upperLimit = (coolingType == HI_ACTIVE_COOLING) ? 45 : 40;
   }
 }
+
 
 BreachType classifyTemperatureBreach(CoolingType coolingType, double temperatureInC) {
   int lowerLimit = 0, upperLimit = 0;
