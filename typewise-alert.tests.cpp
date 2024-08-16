@@ -80,6 +80,12 @@ TEST(TypeWiseAlertTestSuite, CheckAndAlertToEmailNormal) {
     EXPECT_EQ(output, ""); // Ensure no output for NORMAL
 }
 
+TEST(TypeWiseAlertTestSuite, CheckAndAlertInvalidTarget) {
+    BatteryCharacter batteryChar = {MED_ACTIVE_COOLING, "BrandX"};
+    testing::internal::CaptureStdout();
+    checkAndAlert(static_cast<AlertTarget>(999), batteryChar, 30); // Trigger invalid case
+    // No specific output to check, just ensuring the branch is covered
+}
 
 // Test sendToController function
 TEST(TypeWiseAlertTestSuite, SendsToControllerNormal) {
