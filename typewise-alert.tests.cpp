@@ -109,3 +109,12 @@ TEST(TypeWiseAlertTestSuite, CheckAndAlertToControllerNormal) {
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output, "feed : 0\n");  // NORMAL corresponds to 0
 }
+
+// Test getCoolingLimits with an invalid CoolingType
+TEST(TypeWiseAlertTestSuite, GetCoolingLimitsWithInvalidCoolingType) {
+    int lowerLimit = 0;
+    int upperLimit = 0;
+    getCoolingLimits(static_cast<CoolingType>(999), &lowerLimit, &upperLimit);  // Assuming 999 is an invalid type
+    EXPECT_EQ(lowerLimit, 0);  // Assuming default value for invalid type
+    EXPECT_EQ(upperLimit, 40); // Assuming default value for invalid type
+}
