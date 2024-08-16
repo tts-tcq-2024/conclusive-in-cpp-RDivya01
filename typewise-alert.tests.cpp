@@ -33,14 +33,6 @@ TEST(TypeWiseAlertTestSuite, ClassifiesTemperatureBreachForMedActiveCooling) {
     EXPECT_EQ(classifyTemperatureBreach(MED_ACTIVE_COOLING, 38), NORMAL);
 }
 
-// Test sendToController function
-TEST(TypeWiseAlertTestSuite, SendsToController) {
-    testing::internal::CaptureStdout();
-    sendToController(TOO_LOW);
-    std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "feed : 0\n");
-}
-
 // Test sendToEmail function
 TEST(TypeWiseAlertTestSuite, SendsLowTemperatureEmail) {
     testing::internal::CaptureStdout();
@@ -63,6 +55,36 @@ TEST(TypeWiseAlertTestSuite, DoesNotSendNormalTemperatureEmail) {
     EXPECT_EQ(output, "");
 }
 
+TEST(TypeWiseAlertTestSuite, CheckAndAlertToEmail) {
+    BatteryCharacter batteryChar = {HI_ACTIVE_COOLING, "BrandY"};
+    testing::internal::CaptureStdout();
+    checkAndAlert(TO_EMAIL, batteryChar, 46);
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "To: a.b@c.com\nHi, the temperature is too high\n");
+}
+
+// Test sendToController function
+TEST(TypeWiseAlertTestSuite, SendsToController) {
+    testing::internal::CaptureStdout();
+    sendToController(TOO_LOW);
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "feed : 0\n");
+}
+
+TEST(TypeWiseAlertTestSuite, SendsToControllerTooHigh) {
+    testing::internal::CaptureStdout();
+    sendToController(TOO_HIGH);
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "feed : 1\n");
+}
+
+TEST(TypeWiseAlertTestSuite, SendsToControllerNormal) {
+    testing::internal::CaptureStdout();
+    sendToController(NORMAL);
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "feed : 2\n");
+}
+
 // Test checkAndAlert function
 TEST(TypeWiseAlertTestSuite, CheckAndAlertToController) {
     BatteryCharacter batteryChar = {PASSIVE_COOLING, "BrandX"};
@@ -72,11 +94,19 @@ TEST(TypeWiseAlertTestSuite, CheckAndAlertToController) {
     EXPECT_EQ(output, "feed : 1\n");  // TOO_HIGH corresponds to 1
 }
 
-TEST(TypeWiseAlertTestSuite, CheckAndAlertToEmail) {
-    BatteryCharacter batteryChar = {HI_ACTIVE_COOLING, "BrandY"};
+TEST(TypeWiseAlertTestSuite, CheckAndAlertToControllerTooLow) {
+    BatteryCharacter batteryChar = {PASSIVE_COOLING, "BrandX"};
     testing::internal::CaptureStdout();
-    checkAndAlert(TO_EMAIL, batteryChar, 46);
+    checkAndAlert(TO_CONTROLLER, batteryChar, -1);
     std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "To: a.b@c.com\nHi, the temperature is too high\n");
+    EXPECT_EQ(output, "feed : 0\n");  // TOO_LOW corresponds to 0
+}
+
+TEST(TypeWiseAlertTestSuite, CheckAndAlertToControllerNormal) {
+    BatteryCharacter batteryChar = {PASSIVE_COOLING, "BrandX"};
+    testing::internal::CaptureStdout();
+    checkAndAlert(TO_CONTROLLER, batteryChar, 30);
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "feed : 2\n");  // NORMAL corresponds to 2
 }
 
