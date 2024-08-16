@@ -64,25 +64,25 @@ TEST(TypeWiseAlertTestSuite, CheckAndAlertToEmail) {
 }
 
 // Test sendToController function
-TEST(TypeWiseAlertTestSuite, SendsToController) {
+TEST(TypeWiseAlertTestSuite, SendsToControllerNormal) {
+    testing::internal::CaptureStdout();
+    sendToController(NORMAL);
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "feed : 0\n");  // NORMAL corresponds to 0
+}
+
+TEST(TypeWiseAlertTestSuite, SendsToControllerTooLow) {
     testing::internal::CaptureStdout();
     sendToController(TOO_LOW);
     std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "feed : 0\n");
+    EXPECT_EQ(output, "feed : 1\n");  // TOO_LOW corresponds to 1
 }
 
 TEST(TypeWiseAlertTestSuite, SendsToControllerTooHigh) {
     testing::internal::CaptureStdout();
     sendToController(TOO_HIGH);
     std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "feed : 1\n");
-}
-
-TEST(TypeWiseAlertTestSuite, SendsToControllerNormal) {
-    testing::internal::CaptureStdout();
-    sendToController(NORMAL);
-    std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "feed : 2\n");
+    EXPECT_EQ(output, "feed : 2\n");  // TOO_HIGH corresponds to 2
 }
 
 // Test checkAndAlert function
@@ -91,7 +91,7 @@ TEST(TypeWiseAlertTestSuite, CheckAndAlertToController) {
     testing::internal::CaptureStdout();
     checkAndAlert(TO_CONTROLLER, batteryChar, 36);
     std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "feed : 1\n");  // TOO_HIGH corresponds to 1
+    EXPECT_EQ(output, "feed : 2\n");  // TOO_HIGH corresponds to 2
 }
 
 TEST(TypeWiseAlertTestSuite, CheckAndAlertToControllerTooLow) {
@@ -99,7 +99,7 @@ TEST(TypeWiseAlertTestSuite, CheckAndAlertToControllerTooLow) {
     testing::internal::CaptureStdout();
     checkAndAlert(TO_CONTROLLER, batteryChar, -1);
     std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "feed : 0\n");  // TOO_LOW corresponds to 0
+    EXPECT_EQ(output, "feed : 1\n");  // TOO_LOW corresponds to 1
 }
 
 TEST(TypeWiseAlertTestSuite, CheckAndAlertToControllerNormal) {
@@ -107,6 +107,5 @@ TEST(TypeWiseAlertTestSuite, CheckAndAlertToControllerNormal) {
     testing::internal::CaptureStdout();
     checkAndAlert(TO_CONTROLLER, batteryChar, 30);
     std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "feed : 2\n");  // NORMAL corresponds to 2
+    EXPECT_EQ(output, "feed : 0\n");  // NORMAL corresponds to 0
 }
-
